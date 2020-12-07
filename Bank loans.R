@@ -6,8 +6,11 @@
 library(rio)
 library(tidyverse)
 library(ggplot2)
+library(plotly)
+library(plyr)
+library(flexdashboard)
 
-#read data
+#read data file 
 loans <- import("Data/social-development-bank-loans-for-2019.xlsx")
 
 #https://www.sdb.gov.sa/en-us/best-value/e-opendata

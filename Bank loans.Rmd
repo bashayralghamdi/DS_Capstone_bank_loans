@@ -2,15 +2,66 @@
 title: "Banks loans"
 author: "Bashayr Alghamdi"
 date: "05/12/2020"
-output: html_document
+output:   
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    source_code: embed
+
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=TRUE}
+library(flexdashboard) # dashboard
+library(rio) # read xlsx file
+
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(plyr)
+
+library(DT)
+
+
+
+```
+
+Home
+=======================================================================
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### Company 
+
+#### SOCIAL DEVELOPMENT BANK 
+
+    
+Provide financial and non-financial services and targeted savings plans supported by   qualified human resources to contribute in social development, building partnerships with
+multiple sectors, spreading financial awareness and promoting a culture of   self-employment among all segments of society.
+
+Social Development Bank provides its Open Data to all visitors and audiences to the bank’s website in order to enhance the transparency principles and motivate the electronic collaboration. The Bank has shared the data with the [Open Data](https://www.data.gov.sa/Data/en/organization/social_development_bank) Platform which contains number of files with different data in different formats that make it easy to process and re-use.
+
+
+
+### Data
+
+```{r}
+#read data file 
+loans <- import("Data/social-development-bank-loans-for-2019.xlsx")
+#datatable(loans)
+
 ```
 
 
 
+### analyze
+
+## Column {data-width=500}
+
+### branch of the bank
+
+
+```{r}
+chart1
+```
 
 
 
