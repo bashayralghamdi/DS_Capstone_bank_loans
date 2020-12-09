@@ -5,10 +5,8 @@
 #package 
 library(rio)
 library(tidyverse)
-library(ggplot2)
 library(plotly)
-library(plyr)
-library(flexdashboard)
+
 
 #read data file 
 loans <- import("Data/social-development-bank-loans-for-2019.xlsx")
@@ -37,7 +35,7 @@ length(unique(loans$ID)) == nrow(loans)
 
 # branch: there are 27 branches 
 loans %>% 
-  count(branch) %>% 
+  count(branch) %>%  
   mutate(branch=fct_reorder(branch,n)) %>% 
   ggplot(aes(branch,n)) +
   geom_col()+
@@ -48,33 +46,21 @@ loans %>%
   coord_flip()+
   labs(y = "count") 
 
-
-# type: there are 3 type of finance (business,individual and transportation)
 loans %>% 
-  count(type) %>% 
-  mutate(type = fct_reorder(type,n)) %>% 
-  ggplot(aes(type,n)) +
-  geom_col(position = "dodge")+
+  group_by(branch) %>%
+  summarise(count = n()) %>% 
+  mutate(branch=fct_reorder(branch,n)) %>% 
+  ggplot(aes(branch,n)) +
+  geom_col()+
   geom_text(aes(label = n),
-            size = 4.5,
-            hjust = 0.5,
+            size = 3,
+            hjust = 0,
             vjust = 0)+
+  coord_flip()+
   labs(y = "count")
 
-# class: for each type there are class
-loans %>% 
-  count(type, class) %>% 
-  mutate(class=fct_reorder(class,n)) %>% 
-  ggplot(aes(class,n)) +
-  geom_col(position = "dodge")+
-  geom_text(aes(label = n),
-            size = 4,
-            hjust = 0.5,
-            vjust = 0)+
-  facet_wrap(~type,scales = "free")+
-  labs(y = "count",x="classes",title = "Classes for each type of loans\n")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-       legend.position = "none")
+
+
 
 
 # sector:there are three values  (government employee, government retired and undefined)
@@ -88,23 +74,6 @@ loans %>%
             hjust = 0.5,
             vjust = 0)+
   labs(y = "count")
-
-# loan_amount: amount of loans(10,000 - 4,000,000)
-
-plot(loans$loan_amount,ylab = "loan amount")
-boxplot(loans$loan_amount,main="Boxplot",horizontal = TRUE)
-
-summary(loans$loan_amount)
-#Q1 = 42000
-#Q3 = 60000
-#IQR = 60000 - 42000
-
-
-60000+(60000 - 42000)*1.5 #greater than 87000 is outlier
-42000-(60000 - 42000)*1.5 #less than 15000 is outlier
-
-#there are 3392 outliers
-out <- boxplot.stats(loans$loan_amount)$out
 
 
 # installment: there tow value (greater than or equal 1000 & less than 1000)  
@@ -208,8 +177,114 @@ loans %>%
             hjust = 0.5,
             vjust = 0)+
   labs(y = "count")
+# type: there are 3 type of finance (business,individual and transportation)
+loans %>% 
+  count(type) %>% 
+  mutate(type = fct_reorder(type,n)) %>% 
+  ggplot(aes(type,n)) +
+  geom_col(position = "dodge")+
+  geom_text(aes(label = n),
+            size = 4.5,
+            hjust = 0.5,
+            vjust = 0)+
+  labs(y = "count")
+
+# class: for each type there are class
+loans %>% 
+  count(type, class) %>% 
+  mutate(class=fct_reorder(class,n)) %>% 
+  ggplot(aes(class,n)) +
+  geom_col(position = "dodge")+
+  geom_text(aes(label = n),
+            size = 4,
+            hjust = 0.5,
+            vjust = 0)+
+  facet_wrap(~type,scales = "free")+
+  labs(y = "count",x="classes",title = "Classes for each type of loans\n")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+       legend.position = "none")
+
+# loan_amount: amount of loans(10,000 - 4,000,000)
+
+plot(loans$loan_amount,ylab = "loan amount")
 
 
+
+
+#plot the amount of loans for each type 
+ggplot(loans,aes(y=loan_amount,x=type ))+
+  geom_point()
+
+#maximum amount of loan for business type
+loans %>% 
+  filter(type=="business") %>% 
+  summarise(max=max(loan_amount),min=min(loan_amount))
+
+#maximum amount of loan for Individual type
+loans %>% 
+  filter(type=="Individual") %>% 
+  summarise(max=max(loan_amount),min=min(loan_amount))
+
+#maximum amount of loan for Transportation type
+loans %>% 
+  filter(type=="Transportation") %>% 
+  summarise(max=max(loan_amount),min=min(loan_amount))
+
+
+#sum of all amount of loans
+loans %>% 
+  filter(type=="business") %>% 
+  summarise(max=sum(loan_amount))#686064201
+
+loans %>% 
+  filter(type=="Individual") %>% 
+  summarise(max=sum(loan_amount))#4173838000
+#individual type is the most spending money
+
+loans %>% 
+  filter(type=="Transportation") %>% 
+  summarise(max=sum(loan_amount))#80433218
+
+
+#preprocess 
+
+#the target is positive skewed 
+boxplot(loans$loan_amount,main="Boxplot",horizontal = TRUE)
+
+summary(loans$loan_amount)
+Q1 <-  42000
+Q3 <-  60000
+IQR <-  Q3 - Q1
+
+
+Q3+(IQR)*1.5 #greater than 87000 is outlier
+Q1-(IQR)*1.5 #less than 15000 is outlier
+
+
+out <- boxplot.stats(loans$loan_amount)$out
+length(out)#there are 3392 outliers
+
+
+#the distribution of the target 
+loans%>% 
+  ggplot(aes(loan_amount))+
+  geom_histogram()#positive distribution 
+
+loans%>% 
+  ggplot(aes(log(loan_amount)))+
+  geom_histogram()
+
+loans%>% 
+  ggplot(aes(sqrt(loan_amount)))+
+  geom_histogram()
+
+#missing value
+sum(is.na(loans))#there is 9 missing value
+
+
+#remove missing value
+loans <- loans %>% 
+  na.omit()
 
 
 

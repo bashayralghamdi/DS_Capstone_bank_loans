@@ -40,13 +40,12 @@ multiple sectors, spreading financial awareness and promoting a culture of   sel
 Social Development Bank provides its Open Data to all visitors and audiences to the bank’s website in order to enhance the transparency principles and motivate the electronic collaboration. The Bank has shared the data with the [Open Data](https://www.data.gov.sa/Data/en/organization/social_development_bank) Platform which contains number of files with different data in different formats that make it easy to process and re-use.
 
 
-
 ### Data
 
 ```{r}
 #read data file 
 loans <- import("Data/social-development-bank-loans-for-2019.xlsx")
-#datatable(loans)
+datatable(head(loans))
 
 ```
 
@@ -54,18 +53,67 @@ loans <- import("Data/social-development-bank-loans-for-2019.xlsx")
 
 ### analyze
 
-## Column {data-width=500}
-
-### branch of the bank
-
 
 ```{r}
-chart1
+#chart1
 ```
 
 
 
+```{r}
+#loans %>% 
+ # count(branch) %>% 
+  #mutate(branch=fct_reorder(branch,n)) %>% 
+  #ggplot(aes(branch,n)) +
+  #geom_col()+
+  #geom_text(aes(label = n),
+   #         size = 3,
+   #         hjust = 0,
+    #        vjust = 0)+
+  #coord_flip()+
+  #labs(y = "count")
+```
 
+
+report 
+=======================================================================
+
+Column {.tabset}
+-----------------------------------------------------------------------
+
+### target
+
+  
+what is limit of amount_loan that customer need depend on their data
+
+```{r}
+
+plot(loans$loan_amount,ylab = "loan amount")
+boxplot(loans$loan_amount,main="Boxplot",horizontal = TRUE)
+
+summary(loans$loan_amount)
+#Q1 = 42000
+#Q3 = 60000
+#IQR = 60000 - 42000
+```
+
+This is upper value of loan_amount after that is outliers
+```{r}
+upper <- 60000+(60000 - 42000)*1.5 
+upper
+```
+This is lower value of loan_amount before that is outliers
+
+```{r}
+lower <- 42000-(60000 - 42000)*1.5 
+lower
+```
+How many outliers:
+```{r}
+#there are 3392 outliers
+out <- boxplot.stats(loans$loan_amount)$out
+length(out)
+```
 
 
 
