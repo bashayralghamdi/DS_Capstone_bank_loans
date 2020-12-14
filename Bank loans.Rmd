@@ -45,7 +45,9 @@ Social Development Bank provides its Open Data to all visitors and audiences to 
 ```{r}
 #read data file 
 loans <- import("Data/social-development-bank-loans-for-2019.xlsx")
-datatable(head(loans))
+datatable(loans %>% 
+  group_by(type) %>% 
+  summarise(mean=mean(loan_amount),maximum=max(loan_amount),minimum=min(loan_amount)))
 
 ```
 
