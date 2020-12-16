@@ -1,7 +1,7 @@
 # DS_Capstone_bank_loans
 
 
-## Data
+## Sources
 
 ### SOCIAL DEVELOPMENT BANK  
   
@@ -9,14 +9,49 @@ Social Development Bank provides its Open Data to all visitors and audiences to 
   
   
 
-this dataset about Social Development Bank loans for 2019
+this dataset about Social Development Bank loans for 2019  
 Last Updated:	June 23, 2020, 09:44 (AST)
 
-## problem 
+## Problem 
 
 What is the amount of loan the customer can get based on their data?
 
+## Data 
+  
+### Numeric   
+- ID  
+- Loan amount  
+  
+### Categorical 
+#### nominal  
+- branch   
+- Type  
+- Class   
+- Sector  
+- transaction date  
+- status  
+#### Ordinal   
+- Installment  
+- age   
+- family members   
+- salary 
+#### Bainry  
+- Gender   
+- Saving loan  
+- disable  
 
 
-author: Bashayr Alghamdi
+## Method
+- Linear regression  
+- K-nearest neighbours  
+- Regularized regression  
+- Random forest  
+
+
+
+
+
+
+
+author: Bashayr Alghamdi  
 date:6/12/2020
